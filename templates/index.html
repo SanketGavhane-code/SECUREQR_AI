@@ -1,521 +1,924 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>QR Shield | Scan Smart. Stay Safe.</title>
+    <title>QR SHIELD | AI-Based QR Code Phishing Detection</title>
 
-    <!-- Bootstrap -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <meta name="description"
+          content="QR SHIELD analyzes QR code contents and checks URLs for potential phishing indicators.">
 
-    <!-- Google Font -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+          rel="stylesheet">
 
-    <!-- Custom CSS -->
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}"
-    >
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --background: #07111f;
+            --surface: #0d1b2a;
+            --surface-light: #122438;
+            --cyan: #00d9ff;
+            --blue: #258bff;
+            --text: #f4f8ff;
+            --muted: #9aadc2;
+            --border: rgba(0, 217, 255, 0.20);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .navbar {
+            background: rgba(7, 17, 31, 0.96);
+            border-bottom: 1px solid var(--border);
+            padding: 17px 0;
+        }
+
+        .navbar-brand {
+            color: var(--text);
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+        }
+
+        .navbar-brand:hover {
+            color: var(--cyan);
+        }
+
+        .brand-icon {
+            color: var(--cyan);
+            margin-right: 9px;
+        }
+
+        .nav-link {
+            color: #d4dfed;
+            margin-left: 18px;
+            font-size: 0.92rem;
+        }
+
+        .nav-link:hover {
+            color: var(--cyan);
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 85px 0 75px;
+            background:
+                radial-gradient(ellipse at 85% 10%,
+                    rgba(0, 217, 255, 0.12), transparent 38%),
+                radial-gradient(ellipse at 10% 80%,
+                    rgba(37, 139, 255, 0.10), transparent 40%);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--cyan);
+            background: rgba(0, 217, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 8px 15px;
+            font-size: 0.8rem;
+            margin-bottom: 23px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 5vw, 4.2rem);
+            font-weight: 800;
+            line-height: 1.16;
+            letter-spacing: -1.5px;
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, var(--cyan), #5c9dff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.9;
+            max-width: 570px;
+            margin-top: 23px;
+        }
+
+        .security-note {
+            color: var(--muted);
+            font-size: 0.78rem;
+            line-height: 1.7;
+            margin-top: 18px;
+        }
+
+        .scanner-card {
+            background: linear-gradient(145deg,
+                rgba(18, 36, 56, 0.98),
+                rgba(11, 25, 41, 0.98));
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 28px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.25);
+        }
+
+        .scanner-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 9px;
+        }
+
+        .scanner-heading-icon {
+            width: 47px;
+            height: 47px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            color: var(--cyan);
+            background: rgba(0, 217, 255, 0.10);
+            font-size: 1.25rem;
+        }
+
+        .scanner-card h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .scanner-subtitle {
+            color: var(--muted);
+            font-size: 0.84rem;
+            margin-bottom: 24px;
+        }
+
+        .upload-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 185px;
+            text-align: center;
+            padding: 23px;
+            border: 2px dashed rgba(0, 217, 255, 0.38);
+            border-radius: 16px;
+            background: rgba(0, 217, 255, 0.035);
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.drag-over {
+            border-color: var(--cyan);
+            background: rgba(0, 217, 255, 0.09);
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: var(--cyan);
+            margin-bottom: 12px;
+        }
+
+        .upload-title {
+            font-size: 0.96rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .upload-hint {
+            color: var(--muted);
+            font-size: 0.77rem;
+            line-height: 1.7;
+        }
+
+        #qr_image {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0;
+        }
+
+        .preview-container {
+            display: none;
+            margin-top: 18px;
+            padding: 15px;
+            background: rgba(7, 17, 31, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+
+        .preview-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .preview-thumbnail {
+            width: 76px;
+            height: 76px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            background: #fff;
+            border-radius: 9px;
+            overflow: hidden;
+        }
+
+        .preview-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .preview-details {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .preview-label {
+            color: #75f0bd;
+            font-size: 0.76rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .preview-filename {
+            color: var(--text);
+            font-size: 0.79rem;
+            overflow-wrap: anywhere;
+            margin-bottom: 4px;
+        }
+
+        .preview-size {
+            color: var(--muted);
+            font-size: 0.72rem;
+        }
+
+        .remove-button {
+            border: 1px solid rgba(255, 110, 110, 0.35);
+            color: #ff9696;
+            background: transparent;
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .remove-button:hover {
+            background: rgba(255, 110, 110, 0.1);
+        }
+
+        .form-error {
+            display: none;
+            margin-top: 13px;
+            color: #ffabab;
+            background: rgba(255, 80, 80, 0.08);
+            border: 1px solid rgba(255, 80, 80, 0.3);
+            border-radius: 10px;
+            padding: 11px 13px;
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .analyze-button {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 11px;
+            background: linear-gradient(90deg, #00bde9, #258bff);
+            color: #04111f;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: 0.25s ease;
+        }
+
+        .analyze-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(0, 190, 255, 0.22);
+        }
+
+        .analyze-button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .privacy-note {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.73rem;
+            margin-top: 14px;
+            margin-bottom: 0;
+        }
+
+        .section {
+            padding: 75px 0;
+        }
+
+        .section-title {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 13px;
+        }
+
+        .section-description {
+            color: var(--muted);
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 40px;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .feature-card {
+            height: 100%;
+            padding: 25px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface);
+            transition: 0.25s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 217, 255, 0.5);
+        }
+
+        .feature-icon {
+            width: 49px;
+            height: 49px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: rgba(0, 217, 255, 0.09);
+            color: var(--cyan);
+            font-size: 1.25rem;
+            margin-bottom: 18px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--muted);
+            font-size: 0.84rem;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .steps-section {
+            background: rgba(13, 27, 42, 0.7);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .step-number {
+            color: var(--cyan);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        footer {
+            padding: 27px 0;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        footer .brand-footer {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        @media (max-width: 767px) {
+            .hero {
+                padding: 55px 0 45px;
+            }
+
+            .hero h1 {
+                letter-spacing: -0.8px;
+            }
+
+            .scanner-card {
+                padding: 20px;
+                margin-top: 20px;
+            }
+
+            .section {
+                padding: 55px 0;
+            }
+
+            .nav-link {
+                margin-left: 0;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Background effects -->
-    <div class="background-grid"></div>
-    <div class="glow glow-one"></div>
-    <div class="glow glow-two"></div>
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fa-solid fa-shield-halved brand-icon"></i>QR SHIELD
+        </a>
 
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-
-            <a class="navbar-brand" href="/">
-                <span class="brand-icon">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </span>
-                QR <span>SHIELD</span>
-            </a>
-
-            <button
-                class="navbar-toggler"
+        <button class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-            >
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+                style="border-color: #31506a;">
+            <i class="fa-solid fa-bars" style="color: #00d9ff;"></i>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-
-                <ul class="navbar-nav ms-auto">
-
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/">
-                            Home
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#scanner">
-                            Scan QR
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">
-                            Features
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">
-                            About
-                        </a>
-                    </li>
-
-                </ul>
-
-            </div>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="#home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#features">Features</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#how-it-works">How It Works</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#scanner">Scan QR</a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
-
-    <!-- HERO -->
-    <section class="hero-section">
-
+<main>
+    <section class="hero" id="home">
         <div class="container">
+            <div class="row align-items-center g-5">
 
-            <div class="row align-items-center">
-
-                <!-- LEFT -->
-                <div class="col-lg-7">
-
-                    <div class="security-badge">
-                        <i class="fa-solid fa-circle-check"></i>
-                        AI-Powered QR Security
+                <div class="col-lg-6">
+                    <div class="eyebrow">
+                        <i class="fa-solid fa-lock"></i>
+                        QR CODE SECURITY CHECK
                     </div>
 
                     <h1>
                         Scan Smart.<br>
-                        <span>Stay Safe.</span>
+                        Stay <span class="text-gradient">Protected.</span>
                     </h1>
 
-                    <p class="hero-text">
-                        QR Shield analyzes QR codes from newspapers,
-                        pamphlets, advertisements and banking promotions
-                        to identify potentially suspicious links.
+                    <p class="hero-description">
+                        QR SHIELD decodes QR codes and checks their contents
+                        for common phishing indicators. Check a link before
+                        deciding whether to open it.
                     </p>
 
-                    <div class="hero-buttons">
+                    <a href="#scanner"
+                       class="btn btn-outline-info mt-3"
+                       style="border-radius: 9px; padding: 12px 20px;">
+                        <i class="fa-solid fa-qrcode me-2"></i>
+                        Start Scanning
+                    </a>
 
-                        <a href="#scanner" class="btn-primary-custom">
-                            <i class="fa-solid fa-qrcode"></i>
-                            Scan a QR Code
-                        </a>
-
-                        <a href="#features" class="btn-outline-custom">
-                            Explore Features
-                        </a>
-
-                    </div>
-
-                    <div class="security-points">
-
-                        <div>
-                            <i class="fa-solid fa-check"></i>
-                            Secure Analysis
-                        </div>
-
-                        <div>
-                            <i class="fa-solid fa-check"></i>
-                            Risk Detection
-                        </div>
-
-                        <div>
-                            <i class="fa-solid fa-check"></i>
-                            Instant Results
-                        </div>
-
-                    </div>
-
+                    <p class="security-note">
+                        <i class="fa-solid fa-circle-info me-1"></i>
+                        This tool provides a rule-based risk assessment.
+                        A SAFE result does not guarantee that a URL is harmless.
+                    </p>
                 </div>
 
+                <div class="col-lg-6" id="scanner">
+                    <div class="scanner-card">
 
-                <!-- RIGHT SECURITY CARD -->
-                <div class="col-lg-5">
-
-                    <div class="security-card">
-
-                        <div class="card-header-custom">
-                            <div class="status-dot"></div>
-                            QR SECURITY ENGINE
-                            <span>ONLINE</span>
-                        </div>
-
-                        <div class="scanner-visual">
-
-                            <div class="scanner-corners">
-
-                                <span class="corner top-left"></span>
-                                <span class="corner top-right"></span>
-                                <span class="corner bottom-left"></span>
-                                <span class="corner bottom-right"></span>
-
-                                <div class="qr-placeholder">
-
-                                    <div class="qr-pattern">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-
-                                </div>
-
-                                <div class="scan-line"></div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="engine-status">
-
-                            <div>
-                                <small>DECODER</small>
-                                <strong>READY</strong>
-                            </div>
-
-                            <div>
-                                <small>RISK ENGINE</small>
-                                <strong>READY</strong>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- SCANNER -->
-    <section id="scanner" class="scanner-section">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <div class="small-label">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    QR ANALYZER
-                </div>
-
-                <h2>
-                    Check a QR Code
-                </h2>
-
-                <p>
-                    Upload a QR code image and let QR Shield analyze
-                    its contents for suspicious characteristics.
-                </p>
-
-            </div>
-
-
-            <div class="upload-card">
-
-                <form
-                    action="/scan"
-                    method="POST"
-                    enctype="multipart/form-data"
-                >
-
-                    <div class="upload-area">
-
-                        <input
-                            type="file"
-                            id="qr_image"
-                            name="qr_image"
-                            accept=".png,.jpg,.jpeg,.webp"
-                            hidden
-                        >
-
-                        <label for="qr_image" class="upload-label">
-
-                            <div class="upload-icon">
+                        <div class="scanner-heading">
+                            <div class="scanner-heading-icon">
                                 <i class="fa-solid fa-qrcode"></i>
                             </div>
 
-                            <h3>
-                                Upload QR Code
-                            </h3>
+                            <div>
+                                <h2>QR Code Scanner</h2>
+                            </div>
+                        </div>
 
-                            <p>
-                                Drag & drop your QR image here
-                            </p>
+                        <p class="scanner-subtitle">
+                            Select a QR code image to analyze its contents.
+                        </p>
 
-                            <span>
-                                or click to browse
-                            </span>
+                        <form action="/scan"
+                              method="POST"
+                              enctype="multipart/form-data"
+                              id="scanForm">
 
-                            <div class="file-types">
-                                PNG • JPG • JPEG • WEBP
+                            <label for="qr_image" class="upload-zone" id="uploadZone">
+                                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+
+                                <span class="upload-title">
+                                    Click to choose or drag an image here
+                                </span>
+
+                                <span class="upload-hint">
+                                    PNG, JPG, JPEG or WEBP<br>
+                                    Maximum file size: 5 MB
+                                </span>
+                            </label>
+
+                            <input
+                                type="file"
+                                name="qr_image"
+                                id="qr_image"
+                                accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+                                required
+                            >
+
+                            <div class="preview-container" id="previewContainer">
+                                <div class="preview-top">
+                                    <div class="preview-thumbnail">
+                                        <img id="imagePreview"
+                                             alt="Preview of selected QR image">
+                                    </div>
+
+                                    <div class="preview-details">
+                                        <div class="preview-label">
+                                            <i class="fa-solid fa-circle-check me-1"></i>
+                                            Image selected
+                                        </div>
+
+                                        <div class="preview-filename" id="fileName"></div>
+                                        <div class="preview-size" id="fileSize"></div>
+                                    </div>
+
+                                    <button type="button"
+                                            class="remove-button"
+                                            id="removeImage">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
 
-                        </label>
+                            <div class="form-error" id="uploadError" role="alert"></div>
+
+                            <button type="submit"
+                                    class="analyze-button"
+                                    id="analyzeButton"
+                                    disabled>
+                                <i class="fa-solid fa-shield-halved me-2"></i>
+                                Analyze QR Code
+                            </button>
+
+                            <p class="privacy-note">
+                                <i class="fa-solid fa-circle-info me-1"></i>
+                                Select an image to preview it before submitting.
+                            </p>
+                        </form>
 
                     </div>
-
-
-                    <div id="file-name" class="file-name">
-                        No file selected
-                    </div>
-
-
-                    <button type="submit" class="scan-button">
-
-                        <i class="fa-solid fa-shield-halved"></i>
-
-                        Analyze QR Code
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- FEATURES -->
-    <section id="features" class="features-section">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <div class="small-label">
-                    <i class="fa-solid fa-layer-group"></i>
-                    SECURITY FEATURES
                 </div>
 
-                <h2>
-                    Built for QR Security
-                </h2>
-
-                <p>
-                    Multiple security checks help identify potentially
-                    dangerous QR destinations.
-                </p>
-
             </div>
+        </div>
+    </section>
 
+    <section class="section" id="features">
+        <div class="container">
+            <h2 class="section-title">
+                Security <span class="text-gradient">Features</span>
+            </h2>
+
+            <p class="section-description">
+                Understand what is inside a QR code and identify common
+                warning signs before visiting a link.
+            </p>
 
             <div class="row g-4">
-
-                <div class="col-md-4">
-
+                <div class="col-md-6 col-lg-4">
                     <div class="feature-card">
-
                         <div class="feature-icon">
                             <i class="fa-solid fa-qrcode"></i>
                         </div>
 
-                        <h3>
-                            QR Detection
-                        </h3>
+                        <h3>QR Code Decoding</h3>
 
                         <p>
-                            Decode QR codes from uploaded images
-                            and extract their embedded content.
+                            Extracts readable content from an uploaded QR code
+                            image using QR detection.
                         </p>
-
                     </div>
-
                 </div>
 
-
-                <div class="col-md-4">
-
+                <div class="col-md-6 col-lg-4">
                     <div class="feature-card">
-
                         <div class="feature-icon">
-                            <i class="fa-solid fa-link"></i>
+                            <i class="fa-solid fa-magnifying-glass"></i>
                         </div>
 
-                        <h3>
-                            URL Analysis
-                        </h3>
+                        <h3>URL Risk Analysis</h3>
 
                         <p>
-                            Analyze URL characteristics such as
-                            HTTPS, domains, IP addresses and patterns.
+                            Checks decoded URLs for common risk indicators,
+                            including suspicious patterns and domains.
                         </p>
-
                     </div>
-
                 </div>
 
-
-                <div class="col-md-4">
-
+                <div class="col-md-6 col-lg-4">
                     <div class="feature-card">
-
                         <div class="feature-icon">
-                            <i class="fa-solid fa-chart-simple"></i>
-                        </div>
-
-                        <h3>
-                            Risk Assessment
-                        </h3>
-
-                        <p>
-                            Generate an understandable risk score
-                            and classify the QR destination.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ABOUT -->
-    <section id="about" class="about-section">
-
-        <div class="container">
-
-            <div class="about-card">
-
-                <div class="row align-items-center">
-
-                    <div class="col-lg-8">
-
-                        <div class="small-label">
-                            <i class="fa-solid fa-shield"></i>
-                            ABOUT QR SHIELD
-                        </div>
-
-                        <h2>
-                            Don't Scan Blindly.
-                        </h2>
-
-                        <p>
-                            QR codes are increasingly used in advertisements,
-                            newspapers, pamphlets and financial promotions.
-                            QR Shield provides a security layer that analyzes
-                            the QR destination before you trust it.
-                        </p>
-
-                    </div>
-
-                    <div class="col-lg-4 text-center">
-
-                        <div class="large-shield">
                             <i class="fa-solid fa-shield-halved"></i>
                         </div>
 
+                        <h3>Risk Assessment</h3>
+
+                        <p>
+                            Displays a risk score, verdict and detected
+                            warning indicators to help inform your decision.
+                        </p>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </section>
 
-
-    <!-- FOOTER -->
-    <footer>
-
+    <section class="section steps-section" id="how-it-works">
         <div class="container">
+            <h2 class="section-title">
+                How It <span class="text-gradient">Works</span>
+            </h2>
 
-            <div class="footer-content">
+            <p class="section-description">
+                Three simple steps to check a QR code.
+            </p>
 
-                <div>
-                    <strong>
-                        <i class="fa-solid fa-shield-halved"></i>
-                        QR SHIELD
-                    </strong>
-
-                    <p>
-                        Scan Smart. Stay Safe.
-                    </p>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="step-number">STEP 01</div>
+                        <h3>Upload an Image</h3>
+                        <p>
+                            Select a clear image containing a QR code and
+                            verify the preview before submitting it.
+                        </p>
+                    </div>
                 </div>
 
-                <div class="footer-right">
-                    AI-Based QR Security System • 2026
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="step-number">STEP 02</div>
+                        <h3>Decode and Analyze</h3>
+                        <p>
+                            The application extracts the QR content and
+                            evaluates URLs using its configured rules.
+                        </p>
+                    </div>
                 </div>
 
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="step-number">STEP 03</div>
+                        <h3>Review the Result</h3>
+                        <p>
+                            Review the verdict, score and flags. Do not treat
+                            a SAFE result as proof that a website is safe.
+                        </p>
+                    </div>
+                </div>
             </div>
+        </div>
+    </section>
+</main>
 
+<footer>
+    <div class="container d-flex flex-column flex-md-row
+                justify-content-between align-items-center gap-2">
+        <div>
+            <i class="fa-solid fa-shield-halved me-2"
+               style="color: #00d9ff;"></i>
+            <span class="brand-footer">QR SHIELD</span>
+            <span> — QR Code Phishing Detection</span>
         </div>
 
-    </footer>
+        <div>
+            Built for cybersecurity awareness and education.
+        </div>
+    </div>
+</footer>
 
+<script>
+    const qrInput = document.getElementById("qr_image");
+    const uploadZone = document.getElementById("uploadZone");
+    const previewContainer = document.getElementById("previewContainer");
+    const imagePreview = document.getElementById("imagePreview");
+    const fileName = document.getElementById("fileName");
+    const fileSize = document.getElementById("fileSize");
+    const uploadError = document.getElementById("uploadError");
+    const analyzeButton = document.getElementById("analyzeButton");
+    const removeButton = document.getElementById("removeImage");
+    const scanForm = document.getElementById("scanForm");
 
-    <!-- Bootstrap JS -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    const ALLOWED_EXTENSIONS = ["png", "jpg", "jpeg", "webp"];
 
+    let previewObjectUrl = null;
 
-    <!-- File selection script -->
-    <script>
+    function showError(message) {
+        uploadError.textContent = message;
+        uploadError.style.display = "block";
+    }
 
-        const fileInput = document.getElementById("qr_image");
-        const fileName = document.getElementById("file-name");
+    function clearError() {
+        uploadError.textContent = "";
+        uploadError.style.display = "none";
+    }
 
-        fileInput.addEventListener("change", function () {
+    function clearPreview() {
+        if (previewObjectUrl) {
+            URL.revokeObjectURL(previewObjectUrl);
+            previewObjectUrl = null;
+        }
 
-            if (this.files.length > 0) {
+        imagePreview.removeAttribute("src");
+        previewContainer.style.display = "none";
+        fileName.textContent = "";
+        fileSize.textContent = "";
+    }
 
-                fileName.textContent =
-                    "Selected: " + this.files[0].name;
+    function resetSelection() {
+        qrInput.value = "";
+        clearPreview();
+        clearError();
+        analyzeButton.disabled = true;
+    }
 
-            } else {
+    function formatFileSize(bytes) {
+        if (bytes < 1024) {
+            return bytes + " bytes";
+        }
 
-                fileName.textContent =
-                    "No file selected";
+        return (bytes / 1024).toFixed(1) + " KB";
+    }
 
-            }
+    function handleFile(file) {
+        clearError();
+        clearPreview();
+        analyzeButton.disabled = true;
 
-        });
+        if (!file) {
+            return;
+        }
 
-    </script>
+        const extension = file.name.split(".").pop().toLowerCase();
+
+        if (!ALLOWED_EXTENSIONS.includes(extension)) {
+            showError("Unsupported file type. Please choose a PNG, JPG, JPEG or WEBP image.");
+            qrInput.value = "";
+            return;
+        }
+
+        if (file.size === 0) {
+            showError("The selected file is empty. Please choose another image.");
+            qrInput.value = "";
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            showError("The image exceeds the 5 MB limit. Please choose a smaller image.");
+            qrInput.value = "";
+            return;
+        }
+
+        if (!file.type.startsWith("image/")) {
+            showError("The selected file does not appear to be an image.");
+            qrInput.value = "";
+            return;
+        }
+
+        previewObjectUrl = URL.createObjectURL(file);
+        imagePreview.src = previewObjectUrl;
+        fileName.textContent = file.name;
+        fileSize.textContent = formatFileSize(file.size);
+
+        previewContainer.style.display = "block";
+        analyzeButton.disabled = false;
+    }
+
+    qrInput.addEventListener("change", function () {
+        handleFile(this.files[0]);
+    });
+
+    removeButton.addEventListener("click", function () {
+        resetSelection();
+    });
+
+    uploadZone.addEventListener("dragover", function (event) {
+        event.preventDefault();
+        uploadZone.classList.add("drag-over");
+    });
+
+    uploadZone.addEventListener("dragleave", function () {
+        uploadZone.classList.remove("drag-over");
+    });
+
+    uploadZone.addEventListener("drop", function (event) {
+        event.preventDefault();
+        uploadZone.classList.remove("drag-over");
+
+        const file = event.dataTransfer.files[0];
+
+        if (!file) {
+            return;
+        }
+
+        try {
+            const transfer = new DataTransfer();
+            transfer.items.add(file);
+            qrInput.files = transfer.files;
+            handleFile(file);
+        } catch (error) {
+            showError("Could not select this file. Please use the file chooser instead.");
+            resetSelection();
+        }
+    });
+
+    scanForm.addEventListener("submit", function (event) {
+        clearError();
+
+        const file = qrInput.files[0];
+
+        if (!file) {
+            event.preventDefault();
+            showError("Please select a QR code image before analyzing.");
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            event.preventDefault();
+            showError("The image exceeds the 5 MB limit.");
+            return;
+        }
+
+        analyzeButton.disabled = true;
+        analyzeButton.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin me-2"></i>Analyzing QR Code...';
+    });
+
+    imagePreview.addEventListener("error", function () {
+        clearPreview();
+        analyzeButton.disabled = true;
+        showError("The image preview could not be loaded. Please choose a valid image.");
+        qrInput.value = "";
+    });
+
+    window.addEventListener("beforeunload", function () {
+        if (previewObjectUrl) {
+            URL.revokeObjectURL(previewObjectUrl);
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
