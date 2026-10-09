@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>QR SHIELD | Scan Result</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family: "Poppins", sans-serif;
+
+            color: #ffffff;
+
+            background:
+                radial-gradient(
+                    circle at 20% 20%,
+                    rgba(0, 217, 255, 0.10),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 80% 80%,
+                    rgba(0, 119, 255, 0.10),
+                    transparent 30%
+                ),
+                #050b14;
+        }
+
+        /* NAVBAR */
+
+        .navbar {
+            background: rgba(5, 11, 20, 0.85);
+
+            backdrop-filter: blur(12px);
+
+            border-bottom: 1px solid rgba(0, 217, 255, 0.12);
+        }
+
+        .brand {
+            font-size: 1.4rem;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            color: #00d9ff !important;
+        }
+
+        .nav-link {
+            color: #b8c7d9 !important;
+
+            margin-left: 20px;
+
+            transition: 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #00d9ff !important;
+        }
+
+        /* MAIN */
+
+        .result-wrapper {
+            max-width: 1050px;
+
+            margin: auto;
+
+            padding: 90px 20px 60px;
+        }
+
+        .page-title {
+            text-align: center;
+
+            margin-bottom: 45px;
+        }
+
+        .page-title .icon {
+            width: 75px;
+
+            height: 75px;
+
+            margin: auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: rgba(0, 217, 255, 0.08);
+
+            border: 1px solid rgba(0, 217, 255, 0.25);
+
+            color: #00d9ff;
+
+            font-size: 30px;
+
+            box-shadow:
+                0 0 30px rgba(0, 217, 255, 0.12);
+        }
+
+        .page-title h1 {
+            margin-top: 20px;
+
+            font-weight: 700;
+        }
+
+        .page-title p {
+            color: #8da1b5;
+        }
+
+        /* RESULT CARD */
+
+        .result-card {
+            background: rgba(13, 23, 37, 0.80);
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            border-radius: 24px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 25px 70px rgba(0, 0, 0, 0.35);
+
+            backdrop-filter: blur(15px);
+        }
+
+        /* VERDICT */
+
+        .verdict-box {
+            text-align: center;
+
+            padding: 35px;
+
+            border-radius: 20px;
+
+            background: rgba(5, 11, 20, 0.65);
+
+            border: 1px solid rgba(255, 255, 255, 0.06);
+
+            margin-bottom: 30px;
+        }
+
+        .verdict-icon {
+            font-size: 42px;
+
+            margin-bottom: 12px;
+        }
+
+        .verdict {
+            font-size: 2.2rem;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+        }
+
+        .score-text {
+            margin-top: 8px;
+
+            color: #9db0c4;
+
+            font-size: 0.95rem;
+        }
+
+        /* SCORE */
+
+        .score-bar {
+            height: 9px;
+
+            background: #152435;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            margin-top: 20px;
+        }
+
+        .score-fill {
+            height: 100%;
+
+            width: {{ score }}%;
+
+            border-radius: 20px;
+
+            background: linear-gradient(
+                90deg,
+                #00d9ff,
+                #0077ff
+            );
+        }
+
+        /* SECTIONS */
+
+        .info-section {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+
+            font-weight: 600;
+
+            color: #00d9ff;
+
+            margin-bottom: 12px;
+        }
+
+        .url-box {
+            background: #07111d;
+
+            border: 1px solid #19344a;
+
+            border-radius: 12px;
+
+            padding: 18px;
+
+            color: #8eeaff;
+
+            word-break: break-all;
+
+            font-size: 0.95rem;
+        }
+
+        /* FLAGS */
+
+        .flags-box {
+            background: #07111d;
+
+            border: 1px solid #19344a;
+
+            border-radius: 12px;
+
+            padding: 20px;
+        }
+
+        .flag-item {
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 12px;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+
+            color: #d5e2ed;
+
+            font-size: 0.9rem;
+        }
+
+        .flag-item:last-child {
+            border-bottom: none;
+        }
+
+        .flag-icon {
+            color: #f59e0b;
+
+            margin-top: 3px;
+        }
+
+        /* BUTTONS */
+
+        .actions {
+            text-align: center;
+
+            margin-top: 35px;
+        }
+
+        .btn-shield {
+            padding: 12px 24px;
+
+            border-radius: 10px;
+
+            border: 1px solid rgba(0, 217, 255, 0.35);
+
+            background: rgba(0, 217, 255, 0.08);
+
+            color: #00d9ff;
+
+            text-decoration: none;
+
+            transition: 0.3s;
+        }
+
+        .btn-shield:hover {
+            background: #00d9ff;
+
+            color: #041018;
+
+            box-shadow:
+                0 0 25px rgba(0, 217, 255, 0.25);
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+
+            padding: 25px;
+
+            color: #617589;
+
+            font-size: 0.8rem;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 768px) {
+
+            .result-wrapper {
+                padding-top: 60px;
+            }
+
+            .result-card {
+                padding: 20px;
+            }
+
+            .verdict {
+                font-size: 1.8rem;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar navbar-expand-lg fixed-top">
+
+    <div class="container">
+
+        <a class="navbar-brand brand" href="/">
+            <i class="fa-solid fa-shield-halved"></i>
+            QR SHIELD
+        </a>
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div
+            class="collapse navbar-collapse"
+            id="navbarNav"
+        >
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/">
+                        Scan QR
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/#features">
+                        Features
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/#about">
+                        About
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- RESULT -->
+
+<main class="result-wrapper">
+
+    <div class="page-title">
+
+        <div class="icon">
+
+            <i class="fa-solid fa-magnifying-glass-chart"></i>
+
+        </div>
+
+        <h1>Scan Analysis Complete</h1>
+
+        <p>
+            QR SHIELD analyzed the content extracted from your QR code.
+        </p>
+
+    </div>
+
+
+    <div class="result-card">
+
+
+        <!-- VERDICT -->
+
+        <div class="verdict-box">
+
+            {% if verdict == "SAFE" %}
+
+                <div class="verdict-icon"
+                     style="color:#22c55e;">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                </div>
+
+                <div
+                    class="verdict"
+                    style="color:#22c55e;"
+                >
+                    SAFE
+                </div>
+
+            {% elif verdict == "SUSPICIOUS" %}
+
+                <div class="verdict-icon"
+                     style="color:#f59e0b;">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                </div>
+
+                <div
+                    class="verdict"
+                    style="color:#f59e0b;"
+                >
+                    SUSPICIOUS
+                </div>
+
+            {% else %}
+
+                <div class="verdict-icon"
+                     style="color:#ef4444;">
+
+                    <i class="fa-solid fa-circle-xmark"></i>
+
+                </div>
+
+                <div
+                    class="verdict"
+                    style="color:#ef4444;"
+                >
+                    MALICIOUS
+                </div>
+
+            {% endif %}
+
+
+            <div class="score-text">
+
+                Risk Score:
+                <strong>{{ score }}/100</strong>
+
+            </div>
+
+
+            <div class="score-bar">
+
+                <div class="score-fill"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- URL -->
+
+        <div class="info-section">
+
+            <div class="section-title">
+
+                <i class="fa-solid fa-link"></i>
+
+                Extracted URL
+
+            </div>
+
+            <div class="url-box">
+
+                {{ url }}
+
+            </div>
+
+        </div>
+
+
+        <!-- FLAGS -->
+
+        <div class="info-section">
+
+            <div class="section-title">
+
+                <i class="fa-solid fa-shield-virus"></i>
+
+                Security Analysis
+
+            </div>
+
+
+            <div class="flags-box">
+
+                {% for flag in flags %}
+
+                    <div class="flag-item">
+
+                        <i class="fa-solid fa-circle-exclamation flag-icon"></i>
+
+                        <span>
+                            {{ flag }}
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <!-- ACTION -->
+
+        <div class="actions">
+
+            <a href="/" class="btn-shield">
+
+                <i class="fa-solid fa-qrcode"></i>
+
+                Scan Another QR
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+</main>
+
+
+<footer>
+
+    © 2026 QR SHIELD · Scan Smart. Stay Safe.
+
+</footer>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+
+</html>

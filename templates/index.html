@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QR Shield | Scan Smart. Stay Safe.</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Google Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- Custom CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+    <!-- Background effects -->
+    <div class="background-grid"></div>
+    <div class="glow glow-one"></div>
+    <div class="glow glow-two"></div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+
+            <a class="navbar-brand" href="/">
+                <span class="brand-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </span>
+                QR <span>SHIELD</span>
+            </a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            Home
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#scanner">
+                            Scan QR
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">
+                            Features
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">
+                            About
+                        </a>
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- HERO -->
+    <section class="hero-section">
+
+        <div class="container">
+
+            <div class="row align-items-center">
+
+                <!-- LEFT -->
+                <div class="col-lg-7">
+
+                    <div class="security-badge">
+                        <i class="fa-solid fa-circle-check"></i>
+                        AI-Powered QR Security
+                    </div>
+
+                    <h1>
+                        Scan Smart.<br>
+                        <span>Stay Safe.</span>
+                    </h1>
+
+                    <p class="hero-text">
+                        QR Shield analyzes QR codes from newspapers,
+                        pamphlets, advertisements and banking promotions
+                        to identify potentially suspicious links.
+                    </p>
+
+                    <div class="hero-buttons">
+
+                        <a href="#scanner" class="btn-primary-custom">
+                            <i class="fa-solid fa-qrcode"></i>
+                            Scan a QR Code
+                        </a>
+
+                        <a href="#features" class="btn-outline-custom">
+                            Explore Features
+                        </a>
+
+                    </div>
+
+                    <div class="security-points">
+
+                        <div>
+                            <i class="fa-solid fa-check"></i>
+                            Secure Analysis
+                        </div>
+
+                        <div>
+                            <i class="fa-solid fa-check"></i>
+                            Risk Detection
+                        </div>
+
+                        <div>
+                            <i class="fa-solid fa-check"></i>
+                            Instant Results
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RIGHT SECURITY CARD -->
+                <div class="col-lg-5">
+
+                    <div class="security-card">
+
+                        <div class="card-header-custom">
+                            <div class="status-dot"></div>
+                            QR SECURITY ENGINE
+                            <span>ONLINE</span>
+                        </div>
+
+                        <div class="scanner-visual">
+
+                            <div class="scanner-corners">
+
+                                <span class="corner top-left"></span>
+                                <span class="corner top-right"></span>
+                                <span class="corner bottom-left"></span>
+                                <span class="corner bottom-right"></span>
+
+                                <div class="qr-placeholder">
+
+                                    <div class="qr-pattern">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+
+                                </div>
+
+                                <div class="scan-line"></div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="engine-status">
+
+                            <div>
+                                <small>DECODER</small>
+                                <strong>READY</strong>
+                            </div>
+
+                            <div>
+                                <small>RISK ENGINE</small>
+                                <strong>READY</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SCANNER -->
+    <section id="scanner" class="scanner-section">
+
+        <div class="container">
+
+            <div class="section-heading">
+
+                <div class="small-label">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    QR ANALYZER
+                </div>
+
+                <h2>
+                    Check a QR Code
+                </h2>
+
+                <p>
+                    Upload a QR code image and let QR Shield analyze
+                    its contents for suspicious characteristics.
+                </p>
+
+            </div>
+
+
+            <div class="upload-card">
+
+                <form
+                    action="/scan"
+                    method="POST"
+                    enctype="multipart/form-data"
+                >
+
+                    <div class="upload-area">
+
+                        <input
+                            type="file"
+                            id="qr_image"
+                            name="qr_image"
+                            accept=".png,.jpg,.jpeg,.webp"
+                            hidden
+                        >
+
+                        <label for="qr_image" class="upload-label">
+
+                            <div class="upload-icon">
+                                <i class="fa-solid fa-qrcode"></i>
+                            </div>
+
+                            <h3>
+                                Upload QR Code
+                            </h3>
+
+                            <p>
+                                Drag & drop your QR image here
+                            </p>
+
+                            <span>
+                                or click to browse
+                            </span>
+
+                            <div class="file-types">
+                                PNG • JPG • JPEG • WEBP
+                            </div>
+
+                        </label>
+
+                    </div>
+
+
+                    <div id="file-name" class="file-name">
+                        No file selected
+                    </div>
+
+
+                    <button type="submit" class="scan-button">
+
+                        <i class="fa-solid fa-shield-halved"></i>
+
+                        Analyze QR Code
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FEATURES -->
+    <section id="features" class="features-section">
+
+        <div class="container">
+
+            <div class="section-heading">
+
+                <div class="small-label">
+                    <i class="fa-solid fa-layer-group"></i>
+                    SECURITY FEATURES
+                </div>
+
+                <h2>
+                    Built for QR Security
+                </h2>
+
+                <p>
+                    Multiple security checks help identify potentially
+                    dangerous QR destinations.
+                </p>
+
+            </div>
+
+
+            <div class="row g-4">
+
+                <div class="col-md-4">
+
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </div>
+
+                        <h3>
+                            QR Detection
+                        </h3>
+
+                        <p>
+                            Decode QR codes from uploaded images
+                            and extract their embedded content.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-link"></i>
+                        </div>
+
+                        <h3>
+                            URL Analysis
+                        </h3>
+
+                        <p>
+                            Analyze URL characteristics such as
+                            HTTPS, domains, IP addresses and patterns.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <div class="feature-card">
+
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-chart-simple"></i>
+                        </div>
+
+                        <h3>
+                            Risk Assessment
+                        </h3>
+
+                        <p>
+                            Generate an understandable risk score
+                            and classify the QR destination.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ABOUT -->
+    <section id="about" class="about-section">
+
+        <div class="container">
+
+            <div class="about-card">
+
+                <div class="row align-items-center">
+
+                    <div class="col-lg-8">
+
+                        <div class="small-label">
+                            <i class="fa-solid fa-shield"></i>
+                            ABOUT QR SHIELD
+                        </div>
+
+                        <h2>
+                            Don't Scan Blindly.
+                        </h2>
+
+                        <p>
+                            QR codes are increasingly used in advertisements,
+                            newspapers, pamphlets and financial promotions.
+                            QR Shield provides a security layer that analyzes
+                            the QR destination before you trust it.
+                        </p>
+
+                    </div>
+
+                    <div class="col-lg-4 text-center">
+
+                        <div class="large-shield">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="container">
+
+            <div class="footer-content">
+
+                <div>
+                    <strong>
+                        <i class="fa-solid fa-shield-halved"></i>
+                        QR SHIELD
+                    </strong>
+
+                    <p>
+                        Scan Smart. Stay Safe.
+                    </p>
+                </div>
+
+                <div class="footer-right">
+                    AI-Based QR Security System • 2026
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- Bootstrap JS -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+
+    <!-- File selection script -->
+    <script>
+
+        const fileInput = document.getElementById("qr_image");
+        const fileName = document.getElementById("file-name");
+
+        fileInput.addEventListener("change", function () {
+
+            if (this.files.length > 0) {
+
+                fileName.textContent =
+                    "Selected: " + this.files[0].name;
+
+            } else {
+
+                fileName.textContent =
+                    "No file selected";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
